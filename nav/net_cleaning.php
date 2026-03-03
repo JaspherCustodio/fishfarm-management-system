@@ -74,10 +74,13 @@ if ($isAdmin) {
 	<div class="body">
 		
 		<?php include "../inc/nav.php" ?>
-
+        <div class="sidebar-overlay" onclick="closeSidebar()"></div>
 		<section class="section-1">
             <div class="content-header">
                 <h4>Net Cleaning</h4>
+                <button class="menu-toggle" onclick="openSidebar()">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
             </div>
             
             <div class="content-card">
@@ -398,7 +401,19 @@ var table; //variable to hold datatable object
                 },
                 init: function(api, node) { $(node).hide(); }
             }
-        ]
+        ],
+        columnDefs: [
+            { width: "130px", targets: 0 }, // Schedule
+            { width: "150px", targets: 1 }, // Cage Name
+            { width: "160px", targets: 2 }, // Checking Start Date
+            { width: "120px", targets: 3 }, // Time Started
+            { width: "160px", targets: 4 }, // Checking End Date
+            { width: "120px", targets: 5 }, // Time Ended
+            { width: "110px", targets: 6 }, // Status
+            { width: "90px", targets: 7 }  // Actions
+        ],
+        scrollX: true,        // enable horizontal scroll if needed
+        autoWidth: false      // important: lets columnDefs widths take effect
     });
 });
 
@@ -415,6 +430,30 @@ var table; //variable to hold datatable object
         $('#tableSearch').on('keyup', function() {
             table.search(this.value).draw();
         });
+
+                function openSidebar() {
+    document.querySelector('.side-bar').classList.add('active');
+    document.querySelector('.sidebar-overlay').classList.add('active');
+}
+
+function closeSidebar() {
+    document.querySelector('.side-bar').classList.remove('active');
+    document.querySelector('.sidebar-overlay').classList.remove('active');
+}
+
+document.querySelectorAll('.side-bar a').forEach(link => {
+    link.addEventListener('click', (e) => {
+
+        // If it's a dropdown trigger, DO NOT close
+        if (link.classList.contains('overlay-trigger')) {
+            return;
+        }
+
+        if (window.innerWidth <= 900) {
+            closeSidebar();
+        }
+    });
+});
 
     </script>
 

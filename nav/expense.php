@@ -53,10 +53,13 @@ $records = get_expenses($conn);
 	<div class="body">
 		
 		<?php include "../inc/nav.php" ?>
-
+        <div class="sidebar-overlay" onclick="closeSidebar()"></div>
 		<section class="section-1">
             <div class="content-header">
                 <h4>Manage Expense</h4>
+                <button class="menu-toggle" onclick="openSidebar()">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
             </div>
             
             <div class="content-card">
@@ -329,7 +332,15 @@ $records = get_expenses($conn);
                 },
                 init: function(api, node) { $(node).hide(); }
             }
-        ]
+        ],
+        columnDefs: [
+            { width: "150px", targets: 0 }, // Expense Date
+            { width: "130px", targets: 1 }, // Amount
+            { width: "190px", targets: 2 }, // Expense Category
+            { width: "90px", targets: 3 }  // Actions
+        ],
+        scrollX: true,        // enable horizontal scroll if needed
+        autoWidth: false      // important: lets columnDefs widths take effect
     });
 });
 
@@ -346,6 +357,30 @@ $records = get_expenses($conn);
         $('#tableSearch').on('keyup', function() {
             table.search(this.value).draw();
         });
+
+                function openSidebar() {
+    document.querySelector('.side-bar').classList.add('active');
+    document.querySelector('.sidebar-overlay').classList.add('active');
+}
+
+function closeSidebar() {
+    document.querySelector('.side-bar').classList.remove('active');
+    document.querySelector('.sidebar-overlay').classList.remove('active');
+}
+
+document.querySelectorAll('.side-bar a').forEach(link => {
+    link.addEventListener('click', (e) => {
+
+        // If it's a dropdown trigger, DO NOT close
+        if (link.classList.contains('overlay-trigger')) {
+            return;
+        }
+
+        if (window.innerWidth <= 900) {
+            closeSidebar();
+        }
+    });
+});
     </script>
 
 

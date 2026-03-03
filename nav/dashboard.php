@@ -329,8 +329,14 @@ $totalInventory = $conn->query("
 	<div class="body">
 		
 		<?php include "../inc/nav.php" ?>
-
+		<div class="sidebar-overlay" onclick="closeSidebar()"></div>
 		<section class="section-1">
+			<div class="content-header">
+                <h4>Dashboard</h4>
+                <button class="menu-toggle" onclick="openSidebar()">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
 
 			<?php if ($isAdmin): ?>
 			<div class="dashboard-cards main">
@@ -517,6 +523,7 @@ $totalInventory = $conn->query("
     $health = cageHealthPercent($cage['total_mortality'], $lossTotal, $startingQty);
     $color = $health >= 70 ? '#2ecc71' : ($health >= 40 ? '#f39c12' : '#e74c3c');
 ?>
+
 <div class="health-card">
     <h4><?= htmlspecialchars($cage['cage_name']) ?></h4>
 	<p class="health-info">
@@ -647,6 +654,30 @@ $totalInventory = $conn->query("
 				maintainAspectRatio: false
 			}
 		});
+
+		        function openSidebar() {
+    document.querySelector('.side-bar').classList.add('active');
+    document.querySelector('.sidebar-overlay').classList.add('active');
+}
+
+function closeSidebar() {
+    document.querySelector('.side-bar').classList.remove('active');
+    document.querySelector('.sidebar-overlay').classList.remove('active');
+}
+
+document.querySelectorAll('.side-bar a').forEach(link => {
+    link.addEventListener('click', (e) => {
+
+        // If it's a dropdown trigger, DO NOT close
+        if (link.classList.contains('overlay-trigger')) {
+            return;
+        }
+
+        if (window.innerWidth <= 900) {
+            closeSidebar();
+        }
+    });
+});
 
 		</script>
 

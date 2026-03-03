@@ -139,10 +139,7 @@ if ($filter === 'due_this_week') $pageTitle = "Schedules (Due This Week)";
                             <td><?= htmlspecialchars($task['employee_name'] ?? 'Unassigned') ?></td>
                         </tr>
                         <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr>
-        <td colspan="4" style="text-align:center; font-weight:600;">No schedules found</td>
-    </tr>
+                        
                     <?php endif; ?>
                 </tbody>
             </table>
@@ -166,6 +163,34 @@ if ($filter === 'due_this_week') $pageTitle = "Schedules (Due This Week)";
 <!-- JSZip (for Excel export) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
+            document.addEventListener("DOMContentLoaded", function () {
+
+        const currentPage = window.location.pathname.split("/").pop().split("?")[0];
+
+        document.querySelectorAll(".side-bar a").forEach(link => {
+
+            const linkPage = link.getAttribute("href")
+                ?.split("/")
+                .pop()
+                .split("?")[0];
+
+            // Exact match
+            if (linkPage === currentPage) {
+                link.classList.add("active-link");
+            }
+
+            // 🔵 Treat these pages as Dashboard
+            if (
+                (currentPage === "tasks.php" ||
+                currentPage === "schedules.php" ||
+                currentPage === "dashboard.php") &&
+                linkPage === "dashboard.php"
+            ) {
+                link.classList.add("active-link");
+            }
+        });
+
+    });
 var table; //variable to hold datatable object
 
         $(document).ready(function () {
@@ -179,20 +204,24 @@ var table; //variable to hold datatable object
             {
                 extend: 'excelHtml5',
                 className: 'button-excel',
-                exportOptions: {
-                    columns: ':not(:last-child)' // exclude last column (Actions)
-                },
+                
                 init: function(api, node) { $(node).hide(); }
             },
             {
                 extend: 'print',
                 className: 'button-print',
-                exportOptions: {
-                    columns: ':not(:last-child)' // exclude last column (Actions)
-                },
+                
                 init: function(api, node) { $(node).hide(); }
             }
-        ]
+        ],
+        columnDefs: [
+            { width: "160px", targets: 0 }, // Scheduled Date
+            { width: "160px", targets: 1 }, // Type
+            { width: "120px", targets: 2 }, // Cage
+            { width: "140px", targets: 3 }  // Assigned To
+        ],
+        scrollX: true,        // enable horizontal scroll if needed
+        autoWidth: false      // important: lets columnDefs widths take effect
     });
 });
 

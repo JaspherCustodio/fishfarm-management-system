@@ -73,10 +73,13 @@ if ($isAdmin) {
 	<div class="body">
 		
 		<?php include "../inc/nav.php" ?>
-
+        <div class="sidebar-overlay" onclick="closeSidebar()"></div>
 		<section class="section-1">
             <div class="content-header">
                 <h4>Sampling</h4>
+                <button class="menu-toggle" onclick="openSidebar()">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
             </div>
             
             <div class="content-card">
@@ -491,7 +494,19 @@ if ($isAdmin) {
                 },
                 init: function(api, node) { $(node).hide(); }
             }
-        ]
+        ],
+        columnDefs: [
+            { width: "120px", targets: 0 }, // Schedule
+            { width: "130px", targets: 1 }, // Cage Name
+            { width: "150px", targets: 2 }, // Date of Sampling
+            { width: "140px", targets: 3 }, // Fish Type
+            { width: "110px", targets: 4 }, // Weight
+            { width: "110px", targets: 5 }, // Length
+            { width: "110px", targets: 6 }, // Status
+            { width: "100px", targets: 7 }  // Actions
+        ],
+        scrollX: true,        // enable horizontal scroll if needed
+        autoWidth: false      // important: lets columnDefs widths take effect
     });
 });
 
@@ -508,6 +523,30 @@ if ($isAdmin) {
         $('#tableSearch').on('keyup', function() {
             table.search(this.value).draw();
         });
+
+        function openSidebar() {
+    document.querySelector('.side-bar').classList.add('active');
+    document.querySelector('.sidebar-overlay').classList.add('active');
+}
+
+function closeSidebar() {
+    document.querySelector('.side-bar').classList.remove('active');
+    document.querySelector('.sidebar-overlay').classList.remove('active');
+}
+
+document.querySelectorAll('.side-bar a').forEach(link => {
+    link.addEventListener('click', (e) => {
+
+        // If it's a dropdown trigger, DO NOT close
+        if (link.classList.contains('overlay-trigger')) {
+            return;
+        }
+
+        if (window.innerWidth <= 900) {
+            closeSidebar();
+        }
+    });
+});
 
     </script>
 

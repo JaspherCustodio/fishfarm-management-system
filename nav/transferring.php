@@ -74,10 +74,13 @@ $stockings = $conn->query("
 	<div class="body">
 		
 		<?php include "../inc/nav.php" ?>
-
+        <div class="sidebar-overlay" onclick="closeSidebar()"></div>
 		<section class="section-1">
             <div class="content-header">
                 <h4>Transferring</h4>
+                <button class="menu-toggle" onclick="openSidebar()">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
             </div>
             
             <div class="content-card">
@@ -480,7 +483,21 @@ var table; //variable to hold datatable object
                 },
                 init: function(api, node) { $(node).hide(); }
             }
-        ]
+        ],
+        columnDefs: [
+            { width: "120px", targets: 0 }, // Schedule
+            { width: "130px", targets: 1 }, // From Cage
+            { width: "140px", targets: 2 }, // Fish Type
+            { width: "130px", targets: 3 }, // To Cage
+            { width: "160px", targets: 4 }, // Date Transferred
+            { width: "110px", targets: 5 }, // Qty Before
+            { width: "110px", targets: 6 }, // Qty After
+            { width: "190px", targets: 7 }, // Remarks
+            { width: "110px", targets: 8 }, // Status
+            { width: "90px", targets: 9 }  // Actions
+        ],
+         scrollX: true,        // enable horizontal scroll if needed
+        autoWidth: false      // important: lets columnDefs widths take effect
     });
 });
 
@@ -497,6 +514,30 @@ var table; //variable to hold datatable object
         $('#tableSearch').on('keyup', function() {
             table.search(this.value).draw();
         });
+
+        function openSidebar() {
+    document.querySelector('.side-bar').classList.add('active');
+    document.querySelector('.sidebar-overlay').classList.add('active');
+}
+
+function closeSidebar() {
+    document.querySelector('.side-bar').classList.remove('active');
+    document.querySelector('.sidebar-overlay').classList.remove('active');
+}
+
+document.querySelectorAll('.side-bar a').forEach(link => {
+    link.addEventListener('click', (e) => {
+
+        // If it's a dropdown trigger, DO NOT close
+        if (link.classList.contains('overlay-trigger')) {
+            return;
+        }
+
+        if (window.innerWidth <= 900) {
+            closeSidebar();
+        }
+    });
+});
     </script>
 
 

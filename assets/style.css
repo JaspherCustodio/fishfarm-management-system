@@ -660,11 +660,14 @@ span {
 }
 
 .content-header{
+    display: flex;
+    justify-content: space-between;
     padding-left: 15px;
     font-size: 22px;
     font-weight: 600;
     margin-bottom: 20px;
 }
+
 .content-card {
     background: #fff;
     border-radius: 6px;
@@ -1406,25 +1409,144 @@ footer{
     margin-bottom: 8px;
 }
 
+/* HIDE MENU BUTTON ON DESKTOP */
+.menu-toggle {
+    display: none;
+    background: none;
+    color: #262931;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    width: 75px;
+    margin-right: 15px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+
+    outline: none;              /* remove blue outline */
+    box-shadow: none;           /* remove focus shadow */
+    -webkit-tap-highlight-color: transparent; /* remove mobile blue flash */
+}
+.menu-toggle:focus,
+.menu-toggle:active {
+    outline: none;
+    box-shadow: none;
+    background: none; /* prevent default active bg */
+}
+
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+
+    z-index: 998; /* must be lower than sidebar */
+}
+
+.sidebar-overlay.active {
+    opacity: 1;
+    visibility: hidden;
+}
 
 @media (max-width: 900px) {
-    .side-bar { 
-        display: none !important; 
+
+    .menu-toggle {
+        display: inline-block;
     }
+
+    /* Make sidebar overlay */
+    .side-bar {
+        position: fixed;
+        top: 0;
+        left: -320px; /* hidden */
+        background: #1e293b;
+        z-index: 999;
+        overflow-y: auto;
+        width: 310px;
+        min-height: 100vh;
+        transition: 500ms width;
+    }
+
+    .side-bar.active {
+        left: 0;
+    }
+
+    .sidebar-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* Remove layout shift */
+    .body {
+        margin-left: 0 !important;
+    }
+
+    .overlay-menu {
+        position: static;        /* 🔥 remove absolute */
+        top: auto;
+        left: auto;
+
+        width: 100%;
+        background: #262931;
+        border-radius: 0;
+
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        display: none;
+        flex-direction: column;
+
+        box-shadow: none;
+
+    }
+
+    .overlay-parent.open .overlay-menu {
+        margin-top: 15px;
+        display: block;
+        max-height: 300px; /* expand */
+    }
+
 }
 
 /* Hide side nav on small screens */
 @media (max-width: 756px) {
 
     .section-1{
-        padding: 15px 0px;
+        padding: 10px 0px;
     }
 
     .content-header{
-        margin-bottom: 10px;
+        margin-top: 0px;
+        margin-bottom: 0px;
     }
-    .side-bar { 
-        display: none !important; 
+    /* Make sidebar overlay */
+    .side-bar {
+        position: fixed;
+        top: 0;
+        left: -320px; /* hidden */
+        background: #1e293b;
+        z-index: 999;
+        overflow-y: auto;
+        width: 310px;
+        min-height: 100vh;
+        transition: 500ms width;
+    }
+
+    .side-bar.active {
+        left: 0;
+    }
+
+    .sidebar-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* Remove layout shift */
+    .body {
+        margin-left: 0 !important;
     }
 
     .section-footer p {
@@ -1496,8 +1618,6 @@ footer{
         padding: 2px 6px;
         border-radius: 50%;
     }
-
-
 
     .table-tools {
         display: flex;
@@ -1601,5 +1721,45 @@ footer{
     top: 50px;
 }
 
+    .overlay-menu {
+        position: static;        /* 🔥 remove absolute */
+        top: auto;
+        left: auto;
+
+        width: 100%;
+        background: #262931;
+        border-radius: 0;
+
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        display: none;
+        flex-direction: column;
+
+        box-shadow: none;
+
+    }
+
+    .overlay-parent.open .overlay-menu {
+        margin-top: 15px;
+        display: block;
+        max-height: 300px; /* expand */
+    }
+
+    .content-form {
+    display: flex;
+    background: #fff;
+    justify-content: center;
+    flex: 1;
+    padding: 24px;
+    padding-bottom: 50px;
+    padding-top: 30px;
+    border-radius: 10px;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-bottom: 50px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2),
+                0 6px 20px rgba(0,0,0,0.19);
+}
 }
 

@@ -226,7 +226,6 @@ $tasks = $conn->query($sql)->fetch_all(MYSQLI_ASSOC);
                                     
                                 </tr>
                             <?php endforeach; ?>
-                        <?php else: ?>
                         <?php endif; ?>
                     </tbody>
                 </table>
@@ -305,7 +304,15 @@ $tasks = $conn->query($sql)->fetch_all(MYSQLI_ASSOC);
                 },
                 init: function(api, node) { $(node).hide(); }
             }
-        ]
+        ],
+        columnDefs: [
+            { width: "150px", targets: 0 }, // Scheduled Date
+            { width: "130px", targets: 1 }, // Type
+            { width: "130px", targets: 2 }, // Cage
+            { width: "120px", targets: 3 }  // Status
+        ],
+        scrollX: true,        // enable horizontal scroll if needed
+        autoWidth: false      // important: lets columnDefs widths take effect
     });
 });
 
