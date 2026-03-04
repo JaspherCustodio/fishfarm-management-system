@@ -290,7 +290,78 @@ var table; //variable to hold datatable object
                 exportOptions: {
                     columns: ':not(:last-child)' // exclude last column (Actions)
                 },
-                init: function(api, node) { $(node).hide(); }
+                init: function(api, node) { $(node).hide(); },
+customize: function (win) {
+    const root = $(win.document.body);
+
+    // 1. Setup Document Basics
+    root.css({
+        'font-family': '"Helvetica Neue", Helvetica, Arial, sans-serif',
+        'background-color': '#fff'
+    }).find('h1').hide(); // Hide default DataTables title
+
+    // 2. Professional Header (Logo Left, Title Right)
+    root.prepend(`
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px;">
+            <div style="display: flex; align-items: center;">
+                <img src="../assets/img/dpa-logo.png" style="height: 70px; margin-right: 15px;">
+                <div>
+                    <h1 style="margin: 0; font-size: 22px; color: #1a202c; font-weight: bold;">DPA FISH FARM</h1>
+                    <p style="margin: 0; font-size: 12px; color: #4a5568;">JALA-JALA, RIZAL - REGION IV-A</p>
+                </div>
+            </div>
+            <div style="text-align: right;">
+                <h2 style="margin: 0; font-size: 18px; color: #2d3748; text-transform: uppercase;">User Management Report</h2>
+                <p style="margin: 0; font-size: 11px; color: #718096;">Date: ${new Date().toLocaleDateString('en-US', { dateStyle: 'long' })}</p>
+            </div>
+        </div>
+    `);
+
+    // 3. Table Styling
+    const table = root.find('table');
+    table.addClass('compact').css({
+        'width': '100%',
+        'border-collapse': 'collapse'
+    });
+
+    // Header Row Styling
+    table.find('th').css({
+        'background-color': '#e1e1e1',
+        'color': '#333',
+        'border': '1px solid #000',
+        'padding': '12px',
+        'font-size': '12px',
+        'text-transform': 'uppercase'
+    });
+
+    // Body Cell Styling
+    table.find('td').css({
+        'border': '1px solid #000',
+        'padding': '10px',
+        'font-size': '12px',
+        'text-align': 'left'
+    });
+
+    // 4. Professional Footer with Signature Lines
+    root.append(`
+        <div style="margin-top: 100px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 40px;">
+                <div style="width: 250px; text-align: center;">
+                    <div style="border-top: 1px solid #000; margin-bottom: 5px;"></div>
+                    <p style="margin: 0; font-size: 12px; font-weight: bold;">Prepared By</p>
+                </div>
+                <div style="width: 250px; text-align: center;">
+                    <div style="border-top: 1px solid #000; margin-bottom: 5px;"></div>
+                    <p style="margin: 0; font-size: 12px; font-weight: bold;">Approved By</p>
+                </div>
+            </div>
+            <div style="text-align: center; border-top: 1px solid #edf2f7; padding-top: 10px;">
+                <p style="font-size: 10px; color: #a0aec0;">This is a system-generated report. Confidential and intended for internal use only.</p>
+            </div>
+        </div>
+    `);
+}
+
             }
         ],
         columnDefs: [
@@ -301,7 +372,8 @@ var table; //variable to hold datatable object
             { width: "90px", targets: 4 }  // Actions
         ],
         scrollX: true,        // enable horizontal scroll if needed
-        autoWidth: false      // important: lets columnDefs widths take effect
+        autoWidth: false,      // important: lets columnDefs widths take effect
+        order: [[3, 'asc']] // sort by Created column descending
     });
 });
 

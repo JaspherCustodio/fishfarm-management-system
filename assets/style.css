@@ -587,7 +587,7 @@ span {
 
 .main-table td {
     max-width: 180px;
-    white-space: nowrap;
+    white-space: wrap;
     overflow: hidden;
     text-overflow: ellipsis;
     cursor: pointer;
@@ -1594,6 +1594,7 @@ footer{
     line-height: 1.1;
 }
 
+
 /* Make the <b> go to next line */
 .u-name b {
     display: block;      /* forces new line */
@@ -1660,6 +1661,10 @@ footer{
     display: flex;
     flex-wrap: wrap; /* allow wrapping */
     gap: 10px;
+}
+
+.dash-report{
+    flex-wrap: nowrap;
 }
 
 /* Make H3 full width (top line) */

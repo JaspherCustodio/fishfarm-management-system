@@ -312,7 +312,8 @@ $tasks = $conn->query($sql)->fetch_all(MYSQLI_ASSOC);
             { width: "120px", targets: 3 }  // Status
         ],
         scrollX: true,        // enable horizontal scroll if needed
-        autoWidth: false      // important: lets columnDefs widths take effect
+        autoWidth: false,      // important: lets columnDefs widths take effect
+        order: [[0, 'desc']] // sort by Created column descending
     });
 });
 

@@ -506,7 +506,8 @@ if ($isAdmin) {
             { width: "100px", targets: 7 }  // Actions
         ],
         scrollX: true,        // enable horizontal scroll if needed
-        autoWidth: false      // important: lets columnDefs widths take effect
+        autoWidth: false,      // important: lets columnDefs widths take effect
+        order: [[0, 'desc']] // sort by Created column descending
     });
 });
 

@@ -469,7 +469,7 @@ $totalInventory = $conn->query("
 
 		<?php if ($isAdmin): ?>
 		<div class="content-card">
-			<div class="card-header">
+			<div class="card-header dash-report">
 				<i class="fa-solid fa-chart-line"></i>
 				<h3 class="title">Full Expense Report</h3>
 			</div>
@@ -492,7 +492,7 @@ $totalInventory = $conn->query("
 
 
 			<div class="content-card">
-				<div class="card-header">
+				<div class="card-header dash-report">
 					<i class="fa-solid fa-fish"></i>
 					<h3 class="title">Fish Growth (Average Weight)</h3>
 				</div>
@@ -509,7 +509,7 @@ $totalInventory = $conn->query("
 			
 			<?php if ($isAdmin): ?>
 			<div class="content-card">
-				<div class="card-header">
+				<div class="card-header dash-report">
 					<i class="fa-regular fa-calendar-days"></i>
 					<h3 class="title">Cage Transfer Health Overview</h3>
 				</div>

@@ -450,7 +450,8 @@ var table; //variable to hold datatable object
             { width: "90px", targets: 8 }  // Actions
         ],
          scrollX: true,        // enable horizontal scroll if needed
-        autoWidth: false      // important: lets columnDefs widths take effect
+        autoWidth: false,      // important: lets columnDefs widths take effect
+        order: [[0, 'desc']] // sort by Created column descending
     });
 });
 
