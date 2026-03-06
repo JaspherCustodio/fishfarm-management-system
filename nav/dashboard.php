@@ -24,18 +24,52 @@ $totalSchedules = $conn->query("
 // Upcoming schedules in the next 7 days
 $userId = (int)$_SESSION['id'];
 
-$upcomingSchedulesSql = "
-    SELECT COUNT(*) AS total
-    FROM schedules
-    WHERE schedule_datetime >= NOW()
-      AND schedule_datetime <= NOW() + INTERVAL 7 DAY
-";
+// Past Due Tasks (for dashboard)
+$dueThisWeek = 0;
 
-if (!$isAdmin) {
-    $upcomingSchedulesSql .= " AND assigned_to = $userId";
+$tables = [
+    'fish_cage_management' => 'schedule_id',
+    'stocking'             => 'schedule_id',
+    'transfers'            => 'schedule_id',
+    'feedings'             => 'schedule_id',
+    'samplings'            => 'schedule_id',
+    'net_cleaning'         => 'schedule_id',
+    'net_checking'         => 'schedule_id',
+    'net_repairing'        => 'schedule_id',
+];
+
+// Build query for UNION ALL
+$queries = [];
+
+foreach ($tables as $table => $scheduleField) {
+    $q = "SELECT COUNT(*) AS total
+          FROM $table t
+          JOIN schedules s ON s.id = t.$scheduleField
+          WHERE t.status != 'Completed'
+            AND s.schedule_datetime < CURDATE()";
+
+    if (!$isAdmin) {
+        $q .= " AND s.assigned_to = $userId";
+    }
+
+    $queries[] = $q;
 }
 
-$upcomingSchedules = $conn->query($upcomingSchedulesSql)->fetch_assoc()['total'];
+// Deliveries table has delivery_date instead of schedule_datetime
+$deliveriesQuery = "SELECT COUNT(*) AS total
+                    FROM deliveries d
+                    WHERE d.status != 'Completed'
+                      AND d.delivery_date < CURDATE()";
+if (!$isAdmin) $deliveriesQuery .= " AND d.assigned_to = $userId";
+
+$queries[] = $deliveriesQuery;
+
+// Combine all queries using UNION ALL
+$unionQuery = implode(" UNION ALL ", $queries);
+
+$finalQuery = "SELECT SUM(total) AS total_due FROM ($unionQuery) AS all_tasks";
+$result = $conn->query($finalQuery);
+$dueThisWeek = $result ? (int)$result->fetch_assoc()['total_due'] : 0;
 
 
 
@@ -400,11 +434,11 @@ $totalInventory = $conn->query("
 			</a>
 
 			<!-- Upcoming Schedules -->
-			<a href="schedules.php?filter=due_this_week" class="dash-card upcoming">
+			<a href="schedules.php?filter=due_this_week" class="dash-card past-due">
 				<i class="fa fa-calendar-day"></i>
 				<div class="card-text">
-					<h3><?= $upcomingSchedules ?></h3>
-					<p>Due This Week</p>
+					<h3><?= $dueThisWeek ?></h3>
+					<p>Past Due Tasks</p>
 				</div>
 			</a>
 

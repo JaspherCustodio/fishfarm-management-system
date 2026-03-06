@@ -91,20 +91,6 @@ $sql .= "
 
     UNION ALL
 
-    SELECT 'Delivering', d.id, '' AS result, d.status,
-           fc.cage_name, s.schedule_datetime
-    FROM deliveries d
-    JOIN schedules s ON s.id = d.schedule_id
-    JOIN fish_cages fc ON fc.id = s.fish_cage
-    WHERE d.status = '$status'
-";
-
-if (!$isAdmin) $sql .= " AND d.assigned_to = $userId";
-
-$sql .= "
-
-    UNION ALL
-
     SELECT 'Net Cleaning', n.id, '' AS result, n.status,
            fc.cage_name, s.schedule_datetime
     FROM net_cleaning n
@@ -131,14 +117,13 @@ if (!$isAdmin) $sql .= " AND s.assigned_to = $userId";
 
 $sql .= "
 
-    UNION ALL
+   UNION ALL
 
-    SELECT 'Net Repairing', nr.id, '' AS result, nr.status,
-           fc.cage_name, s.schedule_datetime
-    FROM net_repairing nr
-    JOIN schedules s ON s.id = nr.schedule_id
-    JOIN fish_cages fc ON fc.id = s.fish_cage
-    WHERE nr.status = '$status'
+SELECT 'Delivering' AS type, d.id, '' AS result, d.status,
+       fc.cage_name, d.delivery_date AS schedule_datetime
+FROM deliveries d
+LEFT JOIN fish_cages fc ON fc.id = d.cage_id
+WHERE LOWER(d.status) = LOWER('$status')
 ";
 
 if (!$isAdmin) $sql .= " AND s.assigned_to = $userId";

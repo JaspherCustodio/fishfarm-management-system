@@ -48,7 +48,7 @@ textarea {
     overflow-y: auto;
     overflow-x: hidden;
 }
-.dash-card.upcoming {
+.dash-card.past-due {
     background-color: #f1c40f;
     color: #fff;
 }
@@ -56,10 +56,10 @@ textarea {
     background-color: #e74c3c; /* red */
     color: #fff;
 }
-.dash-card.upcoming i, .dash-card.cancelled i{
+.dash-card.past-due i, .dash-card.cancelled i{
     color: #fff;
 }
-.dash-card.cancelled h3, .dash-card.upcoming h3{
+.dash-card.cancelled h3, .dash-card.past-due h3{
     color: #fff;
 }
 
@@ -1108,7 +1108,7 @@ canvas {
 
 .table-tools input {
     padding: 6px 10px;
-    width: 220px;
+    width: 260px;
     border-radius: 6px;
     border: 1px solid #aaa;
     margin: 0px;
@@ -1409,6 +1409,7 @@ footer{
     margin-bottom: 8px;
 }
 
+
 /* HIDE MENU BUTTON ON DESKTOP */
 .menu-toggle {
     display: none;
@@ -1420,7 +1421,7 @@ footer{
     width: 75px;
     margin-right: 15px;
     margin-bottom: 0px;
-    margin-top: 0px;
+    margin-top: -10px;
 
     outline: none;              /* remove blue outline */
     box-shadow: none;           /* remove focus shadow */
@@ -1628,6 +1629,7 @@ footer{
         margin: 10px 18px;
         flex-wrap: wrap;             /* allows wrapping on very small screens */
     }
+    
 
     .table-tools .right-search {
         display: flex;

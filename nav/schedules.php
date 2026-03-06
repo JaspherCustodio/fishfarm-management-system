@@ -12,64 +12,122 @@ $userId = (int)$_SESSION['id'];
 
 $filter = $_GET['filter'] ?? '';
 
-$whereClause = "WHERE 1=1"; // default (show all)
+// Build WHERE clauses for filtering and non-admin
+$whereSchedule = "WHERE 1=1";
+$whereOther = "WHERE 1=1";
 
-// Filters
 if ($filter === 'last30days') {
-    $whereClause .= " AND s.schedule_datetime >= CURDATE() - INTERVAL 30 DAY";
+    $whereSchedule .= " AND s.schedule_datetime >= CURDATE() - INTERVAL 30 DAY";
+    $whereOther .= " AND t.schedule_datetime >= CURDATE() - INTERVAL 30 DAY";
 }
 
+// Past due tasks filter
 if ($filter === 'due_this_week') {
-    $whereClause .= " AND s.schedule_datetime BETWEEN CURDATE() AND CURDATE() + INTERVAL 7 DAY";
+    $whereSchedule .= " AND s.schedule_datetime < CURDATE()";
+    $whereOther .= " AND t.schedule_datetime < CURDATE()";
+    $pageTitle = "Past Due Tasks";
 }
 
-// Non-admins see only their tasks
+// Non-admins only see their own tasks
 if (!$isAdmin) {
-    $whereClause .= " AND s.assigned_to = $userId";
+    $whereSchedule .= " AND s.assigned_to = $userId";
+    $whereOther .= " AND t.assigned_to = $userId";
 }
 
-// Main query
+// Default page title
+if (!isset($pageTitle)) $pageTitle = "All Tasks";
+if ($filter === 'last30days') $pageTitle = "Schedules (Last 30 Days)";
+
+// UNION ALL query to fetch all tasks with status != 'completed'
 $sql = "
-SELECT 
-    s.id,
-    s.schedule_datetime,
-    fc.cage_name,
-    u.name AS employee_name,
-    CASE
-        WHEN fcm.schedule_id IS NOT NULL THEN 'Fish Cage Management'
-        WHEN st.schedule_id IS NOT NULL THEN 'Stocking'
-        WHEN tr.schedule_id IS NOT NULL THEN 'Transferring'
-        WHEN sm.schedule_id IS NOT NULL THEN 'Sampling'
-        WHEN fd.schedule_id IS NOT NULL THEN 'Feeding'
-        WHEN dl.schedule_id IS NOT NULL THEN 'Delivering'
-        WHEN nc.schedule_id IS NOT NULL THEN 'Net Cleaning'
-        WHEN nck.schedule_id IS NOT NULL THEN 'Net Checking'
-        WHEN nr.schedule_id IS NOT NULL THEN 'Net Repairing'
-        ELSE '-'
-    END AS type
-FROM schedules s
+SELECT 'Fish Cage Management' AS type, fcm.id, fcm.status, s.schedule_datetime, fc.cage_name, u.name AS employee_name
+FROM fish_cage_management fcm
+LEFT JOIN schedules s ON s.id = fcm.schedule_id
 LEFT JOIN fish_cages fc ON fc.id = s.fish_cage
 LEFT JOIN users u ON u.id = s.assigned_to
-LEFT JOIN fish_cage_management fcm ON fcm.schedule_id = s.id
-LEFT JOIN stocking st ON st.schedule_id = s.id
-LEFT JOIN transfers tr ON tr.schedule_id = s.id
-LEFT JOIN samplings sm ON sm.schedule_id = s.id
-LEFT JOIN feedings fd ON fd.schedule_id = s.id
-LEFT JOIN deliveries dl ON dl.schedule_id = s.id
-LEFT JOIN net_cleaning nc ON nc.schedule_id = s.id
-LEFT JOIN net_checking nck ON nck.schedule_id = s.id
-LEFT JOIN net_repairing nr ON nr.schedule_id = s.id
-$whereClause
-GROUP BY s.id
-ORDER BY s.schedule_datetime DESC
+$whereSchedule AND fcm.status != 'completed'
+
+UNION ALL
+
+SELECT 'Stocking' AS type, st.id, st.status, s.schedule_datetime, fc.cage_name, u.name AS employee_name
+FROM stocking st
+LEFT JOIN schedules s ON s.id = st.schedule_id
+LEFT JOIN fish_cages fc ON fc.id = s.fish_cage
+LEFT JOIN users u ON u.id = s.assigned_to
+$whereSchedule AND st.status != 'completed'
+
+UNION ALL
+
+SELECT 'Transferring' AS type, tr.id, tr.status, s.schedule_datetime, fc.cage_name, u.name AS employee_name
+FROM transfers tr
+LEFT JOIN schedules s ON s.id = tr.schedule_id
+LEFT JOIN fish_cages fc ON fc.id = s.fish_cage
+LEFT JOIN users u ON u.id = s.assigned_to
+$whereSchedule AND tr.status != 'completed'
+
+UNION ALL
+
+SELECT 'Delivering' AS type, dl.id, dl.status, dl.delivery_date AS schedule_datetime, fc.cage_name, u.name AS employee_name
+FROM deliveries dl
+LEFT JOIN fish_cages fc ON fc.id = dl.cage_id
+LEFT JOIN users u ON u.id = dl.assigned_to
+WHERE dl.delivery_date < CURDATE() AND dl.status != 'completed'
+";
+
+if (!$isAdmin) $sql .= " AND dl.assigned_to = $userId";
+
+$sql .= "
+
+UNION ALL
+
+SELECT 'Feeding' AS type, fd.id, fd.status, s.schedule_datetime, fc.cage_name, u.name AS employee_name
+FROM feedings fd
+LEFT JOIN schedules s ON s.id = fd.schedule_id
+LEFT JOIN fish_cages fc ON fc.id = s.fish_cage
+LEFT JOIN users u ON u.id = s.assigned_to
+$whereSchedule AND fd.status != 'completed'
+
+UNION ALL
+
+SELECT 'Sampling' AS type, sm.id, sm.status, s.schedule_datetime, fc.cage_name, u.name AS employee_name
+FROM samplings sm
+LEFT JOIN schedules s ON s.id = sm.schedule_id
+LEFT JOIN fish_cages fc ON fc.id = s.fish_cage
+LEFT JOIN users u ON u.id = s.assigned_to
+$whereSchedule AND sm.status != 'completed'
+
+UNION ALL
+
+SELECT 'Net Cleaning' AS type, nc.id, nc.status, s.schedule_datetime, fc.cage_name, u.name AS employee_name
+FROM net_cleaning nc
+LEFT JOIN schedules s ON s.id = nc.schedule_id
+LEFT JOIN fish_cages fc ON fc.id = s.fish_cage
+LEFT JOIN users u ON u.id = s.assigned_to
+$whereSchedule AND nc.status != 'completed'
+
+UNION ALL
+
+SELECT 'Net Checking' AS type, nck.id, nck.status, s.schedule_datetime, fc.cage_name, u.name AS employee_name
+FROM net_checking nck
+LEFT JOIN schedules s ON s.id = nck.schedule_id
+LEFT JOIN fish_cages fc ON fc.id = s.fish_cage
+LEFT JOIN users u ON u.id = s.assigned_to
+$whereSchedule AND nck.status != 'completed'
+
+UNION ALL
+
+SELECT 'Net Repairing' AS type, nr.id, nr.status, s.schedule_datetime, fc.cage_name, u.name AS employee_name
+FROM net_repairing nr
+LEFT JOIN schedules s ON s.id = nr.schedule_id
+LEFT JOIN fish_cages fc ON fc.id = s.fish_cage
+LEFT JOIN users u ON u.id = s.assigned_to
+$whereSchedule AND nr.status != 'completed'
+
+ORDER BY schedule_datetime DESC
 ";
 
 $result = $conn->query($sql);
 $tasks = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
-
-$pageTitle = "All Schedules";
-if ($filter === 'last30days') $pageTitle = "Schedules (Last 30 Days)";
-if ($filter === 'due_this_week') $pageTitle = "Schedules (Due This Week)";
 ?>
 <!DOCTYPE html>
 <html>
