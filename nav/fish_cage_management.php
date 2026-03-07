@@ -98,7 +98,6 @@ if (!$data) {
                 </div>
             </div>
 
-            <?php if (!empty($records)): ?>
             <table class="main-table" id="dataTable">
                 <thead>
                     <tr>
@@ -148,15 +147,6 @@ if (!$data) {
                     <?php endforeach; ?>
                 </tbody>
             </table>
-            <?php else: ?>
-            <table class="main-table" id="dataTable">
-                <tbody>
-                    <tr>
-                        <td colspan="<?= $isAdmin ? 9 : 8 ?>" style="text-align:center;">No Fish Cage Management Record</td>
-                    </tr>
-                </tbody>
-            </table>
-            <?php endif; ?>
         </div>
         <?php include "../inc/footer.php" ?>
     </section>
@@ -663,7 +653,10 @@ doc.pageMargins = [35, 70, 40, 50]; // [left, top, right, bottom]
         ],
         scrollX: true,        // enable horizontal scroll if needed
         autoWidth: false,      // important: lets columnDefs widths take effect
-        order: [[0, 'desc']] // sort by Created column descending
+        order: [[0, 'desc']], // sort by Created column descending
+        language: {
+            emptyTable: "No fish cage management found" // <-- put this here, no second initialization
+        }
     });
 });
 

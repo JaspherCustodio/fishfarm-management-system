@@ -85,7 +85,6 @@ if (!$data) {
                 </div>
 
                 <!-- table here -->
-                <?php if (!empty($cages)) { ?>
                 <table class="main-table" id="dataTable">
                     <thead>
                         <tr>
@@ -119,24 +118,6 @@ if (!$data) {
                         <?php } ?>
                     </tbody>
                 </table>
-                <?php } else { ?>
-                <table class="main-table" id="dataTable">
-                    <thead>
-                        <tr>
-                            <th scope="col">Cage Name</th>
-                            <th scope="col">Date Added</th>
-                            <th scope="col" class="col-actions">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-							<td colspan="3" style="text-align:center;">
-                				No Fish Cage Record
-            				</td>
-						</tr>	
-                    </tbody>
-                </table>   
-                <?php } ?>
             </div>
             <?php include "../inc/footer.php" ?>
 		</section>
@@ -599,7 +580,10 @@ doc.pageMargins = [35, 70, 40, 50]; // [left, top, right, bottom]
         ],
         scrollX: true,        // enable horizontal scroll if needed
         autoWidth: false,      // important: lets columnDefs widths take effect
-        order: [[1, 'desc']] // sort by Created column descending
+        order: [[1, 'desc']], // sort by Created column descending
+        language: {
+            emptyTable: "No fish cage found" // <-- put this here, no second initialization
+        }
     });
 });
 

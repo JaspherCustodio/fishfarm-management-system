@@ -15,11 +15,7 @@ $isAdmin = $_SESSION['role'] === 'admin';
 
 include "../auth/config.php";
 
-$totalSchedules = $conn->query("
-    SELECT COUNT(*) AS total 
-    FROM schedules 
-    WHERE schedule_datetime >= NOW() - INTERVAL 30 DAY
-")->fetch_assoc()['total'];
+
 
 // Upcoming schedules in the next 7 days
 $userId = (int)$_SESSION['id'];
@@ -71,6 +67,169 @@ $finalQuery = "SELECT SUM(total) AS total_due FROM ($unionQuery) AS all_tasks";
 $result = $conn->query($finalQuery);
 $dueThisWeek = $result ? (int)$result->fetch_assoc()['total_due'] : 0;
 
+// Total schedules in the last 30 days
+$schedules30daysQuery = "
+    SELECT COUNT(*) AS total
+    FROM (
+        SELECT s.id
+        FROM fish_cage_management fcm
+        LEFT JOIN schedules s ON s.id = fcm.schedule_id
+        WHERE fcm.status != 'completed' 
+          AND s.schedule_datetime >= CURDATE() - INTERVAL 30 DAY
+
+        UNION ALL
+
+        SELECT s.id
+        FROM stocking st
+        LEFT JOIN schedules s ON s.id = st.schedule_id
+        WHERE st.status != 'completed' 
+          AND s.schedule_datetime >= CURDATE() - INTERVAL 30 DAY
+
+        UNION ALL
+
+        SELECT s.id
+        FROM transfers tr
+        LEFT JOIN schedules s ON s.id = tr.schedule_id
+        WHERE tr.status != 'completed' 
+          AND s.schedule_datetime >= CURDATE() - INTERVAL 30 DAY
+
+        UNION ALL
+
+        SELECT dl.id
+        FROM deliveries dl
+        WHERE dl.status != 'completed' 
+          AND dl.delivery_date >= CURDATE() - INTERVAL 30 DAY
+
+        UNION ALL
+
+        SELECT s.id
+        FROM feedings fd
+        LEFT JOIN schedules s ON s.id = fd.schedule_id
+        WHERE fd.status != 'completed' 
+          AND s.schedule_datetime >= CURDATE() - INTERVAL 30 DAY
+
+        UNION ALL
+
+        SELECT s.id
+        FROM samplings sm
+        LEFT JOIN schedules s ON s.id = sm.schedule_id
+        WHERE sm.status != 'completed' 
+          AND s.schedule_datetime >= CURDATE() - INTERVAL 30 DAY
+
+        UNION ALL
+
+        SELECT s.id
+        FROM net_cleaning nc
+        LEFT JOIN schedules s ON s.id = nc.schedule_id
+        WHERE nc.status != 'completed' 
+          AND s.schedule_datetime >= CURDATE() - INTERVAL 30 DAY
+
+        UNION ALL
+
+        SELECT s.id
+        FROM net_checking nck
+        LEFT JOIN schedules s ON s.id = nck.schedule_id
+        WHERE nck.status != 'completed' 
+          AND s.schedule_datetime >= CURDATE() - INTERVAL 30 DAY
+
+        UNION ALL
+
+        SELECT s.id
+        FROM net_repairing nr
+        LEFT JOIN schedules s ON s.id = nr.schedule_id
+        WHERE nr.status != 'completed' 
+          AND s.schedule_datetime >= CURDATE() - INTERVAL 30 DAY
+    ) AS all_tasks
+";
+
+// Non-admins only see their tasks
+if (!$isAdmin) {
+    $schedules30daysQuery = "
+        SELECT COUNT(*) AS total
+        FROM (
+            SELECT s.id
+            FROM fish_cage_management fcm
+            LEFT JOIN schedules s ON s.id = fcm.schedule_id
+            WHERE fcm.status != 'completed' 
+              AND s.schedule_datetime >= CURDATE() - INTERVAL 30 DAY
+              AND s.assigned_to = $userId
+
+            UNION ALL
+
+            SELECT s.id
+            FROM stocking st
+            LEFT JOIN schedules s ON s.id = st.schedule_id
+            WHERE st.status != 'completed' 
+              AND s.schedule_datetime >= CURDATE() - INTERVAL 30 DAY
+              AND s.assigned_to = $userId
+
+            UNION ALL
+
+            SELECT s.id
+            FROM transfers tr
+            LEFT JOIN schedules s ON s.id = tr.schedule_id
+            WHERE tr.status != 'completed' 
+              AND s.schedule_datetime >= CURDATE() - INTERVAL 30 DAY
+              AND s.assigned_to = $userId
+
+            UNION ALL
+
+            SELECT dl.id
+            FROM deliveries dl
+            WHERE dl.status != 'completed' 
+              AND dl.delivery_date >= CURDATE() - INTERVAL 30 DAY
+              AND dl.assigned_to = $userId
+
+            UNION ALL
+
+            SELECT s.id
+            FROM feedings fd
+            LEFT JOIN schedules s ON s.id = fd.schedule_id
+            WHERE fd.status != 'completed' 
+              AND s.schedule_datetime >= CURDATE() - INTERVAL 30 DAY
+              AND s.assigned_to = $userId
+
+            UNION ALL
+
+            SELECT s.id
+            FROM samplings sm
+            LEFT JOIN schedules s ON s.id = sm.schedule_id
+            WHERE sm.status != 'completed' 
+              AND s.schedule_datetime >= CURDATE() - INTERVAL 30 DAY
+              AND s.assigned_to = $userId
+
+            UNION ALL
+
+            SELECT s.id
+            FROM net_cleaning nc
+            LEFT JOIN schedules s ON s.id = nc.schedule_id
+            WHERE nc.status != 'completed' 
+              AND s.schedule_datetime >= CURDATE() - INTERVAL 30 DAY
+              AND s.assigned_to = $userId
+
+            UNION ALL
+
+            SELECT s.id
+            FROM net_checking nck
+            LEFT JOIN schedules s ON s.id = nck.schedule_id
+            WHERE nck.status != 'completed' 
+              AND s.schedule_datetime >= CURDATE() - INTERVAL 30 DAY
+              AND s.assigned_to = $userId
+
+            UNION ALL
+
+            SELECT s.id
+            FROM net_repairing nr
+            LEFT JOIN schedules s ON s.id = nr.schedule_id
+            WHERE nr.status != 'completed' 
+              AND s.schedule_datetime >= CURDATE() - INTERVAL 30 DAY
+              AND s.assigned_to = $userId
+        ) AS all_tasks
+    ";
+}
+
+$totalSchedules = $conn->query($schedules30daysQuery)->fetch_assoc()['total'] ?? 0;
+
 
 
 // Total cages
@@ -95,115 +254,49 @@ if (!$isAdmin) {
 }
 
 
-if (!$isAdmin) {
-    $statusCounts = $conn->query("
-        SELECT status, COUNT(*) as total
-        FROM (
-            SELECT f.status
-            FROM fish_cage_management f
-            JOIN schedules s ON s.id = f.schedule_id
-            WHERE s.assigned_to = $userId
+$taskTables = [
+    'fish_cage_management',
+    'samplings',
+    'feedings',
+    'stocking',
+    'transfers',
+    'net_cleaning',
+    'net_checking',
+    'net_repairing',
+    'deliveries'
+];
 
-            UNION ALL
-
-            SELECT n.status
-            FROM net_cleaning n
-            JOIN schedules s ON s.id = n.schedule_id
-            WHERE s.assigned_to = $userId
-
-            UNION ALL
-
-            SELECT nr.status
-            FROM net_repairing nr
-            JOIN schedules s ON s.id = nr.schedule_id
-            WHERE s.assigned_to = $userId
-
-            UNION ALL
-
-            SELECT nk.status
-            FROM net_checking nk
-            JOIN schedules s ON s.id = nk.schedule_id
-            WHERE s.assigned_to = $userId
-
-            UNION ALL
-
-            SELECT st.status
-            FROM stocking st
-            JOIN schedules s ON s.id = st.schedule_id
-            WHERE s.assigned_to = $userId
-
-            UNION ALL
-
-            SELECT fd.status
-            FROM feedings fd
-            JOIN schedules s ON s.id = fd.schedule_id
-            WHERE s.assigned_to = $userId
-
-            UNION ALL
-
-            SELECT sp.status
-            FROM samplings sp
-            JOIN schedules s ON s.id = sp.schedule_id
-            WHERE s.assigned_to = $userId
-
-			UNION ALL
-
-			SELECT t.status
-            FROM transfers t
-			JOIN schedules s ON s.id = t.schedule_id
-            WHERE t.assigned_to = $userId
-
-			UNION ALL
-
-			SELECT d.status
-			FROM deliveries d
-			JOIN schedules s ON s.id = d.schedule_id
-			WHERE d.assigned_to = $userId
-
-
-        ) AS all_tasks
-        GROUP BY status
-    ");
-} else {
-    $statusCounts = $conn->query("
-        SELECT status, COUNT(*) as total
-        FROM (
-            SELECT status FROM fish_cage_management
-            UNION ALL
-            SELECT status FROM net_cleaning
-            UNION ALL
-            SELECT status FROM net_repairing
-            UNION ALL
-            SELECT status FROM net_checking
-            UNION ALL
-            SELECT status FROM stocking
-            UNION ALL
-            SELECT status FROM feedings
-            UNION ALL
-            SELECT status FROM samplings
-			UNION ALL
-            SELECT status FROM transfers
-			UNION ALL
-            SELECT status FROM deliveries
-        ) AS all_tasks
-        GROUP BY status
-    ");
+$queries = [];
+foreach ($taskTables as $table) {
+    if ($table === 'deliveries') {
+        $q = "SELECT LOWER(status) AS status FROM deliveries";
+        if (!$isAdmin) $q .= " WHERE assigned_to = $userId";
+    } else {
+        $q = "SELECT LOWER(status) AS status FROM $table";
+        if (!$isAdmin) $q .= " JOIN schedules s ON s.id = $table.schedule_id AND s.assigned_to = $userId";
+    }
+    $queries[] = $q;
 }
 
-$statusCounts = $statusCounts->fetch_all(MYSQLI_ASSOC);
+$statusCountsQuery = "SELECT status, COUNT(*) AS total FROM (".implode(" UNION ALL ", $queries).") AS all_tasks GROUP BY status";
 
+$statusCountsResult = $conn->query($statusCountsQuery);
 
+$statusCounts = [];
+if ($statusCountsResult) {
+    $statusCounts = $statusCountsResult->fetch_all(MYSQLI_ASSOC);
+}
 
-$pendingTasks = 0;
-$ongoingTasks = 0;
-$completedTasks = 0;
-$cancelledTasks = 0;
+$pendingTasks   = $ongoingTasks = $completedTasks = $cancelledTasks = 0;
 
 foreach ($statusCounts as $row) {
-    if ($row['status'] == 'Pending') $pendingTasks = $row['total'];
-    if ($row['status'] == 'Ongoing') $ongoingTasks = $row['total'];
-    if ($row['status'] == 'Completed') $completedTasks = $row['total'];
-	if ($row['status'] == 'Cancelled') $cancelledTasks = $row['total'];
+    $status = ucfirst(strtolower($row['status'])); // normalize
+    switch ($status) {
+        case 'Pending':   $pendingTasks   = (int)$row['total']; break;
+        case 'Ongoing':   $ongoingTasks   = (int)$row['total']; break;
+        case 'Completed': $completedTasks = (int)$row['total']; break;
+        case 'Cancelled': $cancelledTasks = (int)$row['total']; break;
+    }
 }
 
 

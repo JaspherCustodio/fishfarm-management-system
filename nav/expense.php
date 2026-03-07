@@ -94,7 +94,6 @@ if (!$data) {
                 </div>
 
                 <!-- table here -->
-                <?php if (!empty($records)) { ?>
 
                 <table class="main-table" id="dataTable">
                     <thead>
@@ -134,25 +133,6 @@ if (!$data) {
                     </tbody>
 
             </table>
-            <?php } else { ?>
-                <table class="main-table id="dataTable"">
-                    <thead>
-                        <tr>
-                        <th scope="col">Expense Date</th>
-                        <th scope="col">Amount</th>
-                        <th scope="col">Expense Category</th>
-                        <th scope="col" class="col-actions">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="4" style="text-align:center;">
-                				No Expense
-            				</td>
-                        </tr>
-                    </tbody>
-                </table>
-            <?php } ?>
             </div>
             <?php include "../inc/footer.php" ?>
 		</section>
@@ -661,7 +641,10 @@ doc.pageMargins = [35, 70, 40, 50]; // [left, top, right, bottom]
         ],
         scrollX: true,        // enable horizontal scroll if needed
         autoWidth: false,     // important: lets columnDefs widths take effect
-        order: [[0, 'desc']] // sort by Created column descending
+        order: [[0, 'desc']], // sort by Created column descending
+        language: {
+            emptyTable: "No expenses found" // <-- put this here, no second initialization
+        }
     });
 });
 

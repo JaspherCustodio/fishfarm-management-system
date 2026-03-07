@@ -116,7 +116,6 @@ if (!$data) {
                 </div>
 
                 <!-- table here -->
-                <?php if (!empty($transfers)) { ?>
 				<table class="main-table" id="dataTable">
 					<thead>
 						<tr>
@@ -183,32 +182,6 @@ if (!$data) {
 					<?php endforeach; ?>
 					</tbody>
 				</table>
-				<?php } else { ?>
-				<table class="main-table" id="dataTable">
-					<thead>
-						<tr>
-							<th scope="col">Schedule</th>
-							<th scope="col">From Cage</th>
-							<th scopre="col">Fish Type</th>
-							<th scope="col">To Cage</th>
-							<th scope="col">Date Transferred</th>
-							<th scope="col">Qty Before</th>
-							<th scope="col">Qty After</th>
-							
-							<th scope="col">Remarks</th>
-							<th scope="col">Status</th>
-							<th class="col-actions">Actions</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td colspan="10" style="text-align:center;">
-                				No Transferring Record
-            				</td>
-						</tr>	
-					</tbody>
-				</table>
-				<?php } ?>
             </div>
 			<?php include "../inc/footer.php" ?>
 		</section>
@@ -824,7 +797,10 @@ doc.pageMargins = [35, 70, 40, 50]; // [left, top, right, bottom]
         ],
          scrollX: true,        // enable horizontal scroll if needed
         autoWidth: false,      // important: lets columnDefs widths take effect
-        order: [[0, 'desc']] // sort by Created column descending
+        order: [[0, 'desc']], // sort by Created column descending
+        language: {
+            emptyTable: "No transferring found" // <-- put this here, no second initialization
+        }
     });
 });
 

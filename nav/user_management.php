@@ -86,7 +86,6 @@ if (!$data) {
                 </div>
 
                 <!-- table here -->
-                <?php if ($users != 0) { ?>
 
                 <table class="main-table" id="dataTable">
                     <thead>
@@ -123,26 +122,6 @@ if (!$data) {
                     <?php	} ?>
                     </tbody>
                 </table>
-                <?php }else { ?>
-                <table class="main-table" id="dataTable">
-                    <thead>
-                        <tr>
-                        <th scope="col">Email</th>
-                        <th scope="col">Contact No</th>
-                        <th scope="col">Full name</th>
-                        <th scope="col">Role</th>
-                        <th scope="col" class="col-actions">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-							<td colspan="5" style="text-align:center;">
-                				No Admin or User Record
-            				</td>
-						</tr>	
-                    </tbody>
-                </table>
-                <?php  }?>
             </div>
             <?php include "../inc/footer.php" ?>
 		</section>
@@ -622,7 +601,10 @@ doc.pageMargins = [35, 70, 40, 50]; // [left, top, right, bottom]
         ],
         scrollX: true,        // enable horizontal scroll if needed
         autoWidth: false,      // important: lets columnDefs widths take effect
-        order: [[3, 'asc']] // sort by Created column descending
+        order: [[3, 'asc']], // sort by Created column descending
+        language: {
+            emptyTable: "No users found" // <-- put this here, no second initialization
+        }
     });
 });
 

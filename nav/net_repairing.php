@@ -113,7 +113,6 @@ if (!$data) {
                 </div>
 
                 <!-- table here -->
-                <?php if (!empty($repairings)) { ?>
 
                 <table class="main-table" id="dataTable">
                     <thead>
@@ -177,29 +176,6 @@ if (!$data) {
                     <?php } ?>
                 </tbody>
             </table>
-            <?php } else { ?>
-                <table class="main-table" id="dataTable">
-                    <thead>
-                        <tr>
-                        <th scope="col">Schedule</th>
-                        <th scope="col">Cage Name</th>
-                        <th scope="col">Repairing Start Date</th>
-                        <th scope="col">Time Started</th>
-                        <th scope="col">Repairing End Date</th>
-                        <th scope="col">Time Ended</th>
-                        <th scope="col">Status</th>
-                        <th scope="col" class="col-actions">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="9" style="text-align:center;">
-                				No Net Repairing Record
-            				</td>
-                        </tr>
-                    </tbody>
-                </table>
-            <?php } ?>
             </div>
             <?php include "../inc/footer.php" ?>
 		</section>
@@ -728,7 +704,10 @@ doc.pageMargins = [35, 70, 40, 50]; // [left, top, right, bottom]
         ],
         scrollX: true,        // enable horizontal scroll if needed
         autoWidth: false,      // important: lets columnDefs widths take effect
-        order: [[0, 'desc']] // sort by Created column descending
+        order: [[0, 'desc']], // sort by Created column descending
+        language: {
+            emptyTable: "No net repairing found" // <-- put this here, no second initialization
+        }
     });
 });
 

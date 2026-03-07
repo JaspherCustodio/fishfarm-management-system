@@ -1210,8 +1210,8 @@ canvas {
 /* Badge adjustments */
 .notif-badge {
     position: absolute;
-    top: -6px;
-    right: -6px;
+    top: -14px;
+    right: -14px;
     background: red;
     color: #fff;
     font-size: 11px;
@@ -1612,8 +1612,6 @@ footer{
 
     .notif-badge {
         position: absolute;
-        top: -6px;
-        right: -6px;
         background: red;
         color: white;
         font-size: 10px;
@@ -1715,8 +1713,6 @@ footer{
 
 .notif-badge {
     position: absolute;
-    top: -6px;
-    right: -6px;
     background: red;
     color: white;
     font-size: 10px;

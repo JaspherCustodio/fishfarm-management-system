@@ -99,7 +99,6 @@ if (!$data) {
                     </div>
                 </div>
 
-        <?php if (!empty($deliveries)) { ?>
         <table class="main-table" id="dataTable">
             <thead>
                 <tr>
@@ -166,26 +165,6 @@ if (!$data) {
             <?php endforeach; ?>
             </tbody>
         </table>
-        <?php } else { ?>
-        <table class="main-table" id="dataTable">
-            <thead>
-                <tr>
-                    <th>Schedule</th>
-                    <th>Cage</th>
-                    <th>Fish Type</th>
-                    <th>Delivery Date</th>
-                    <th>Quantity Delivered</th>
-                    <th>Buyer Name</th>
-                    <th>Amount Received</th>
-                    <th>Remarks</th>
-                    <th class="col-actions">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td colspan="10" style="text-align:center;">No Delivering Record</td></tr>
-            </tbody>
-        </table>
-        <?php } ?>
     </div>
     <?php include "../inc/footer.php" ?>
 </section>
@@ -736,7 +715,10 @@ doc.pageMargins = [35, 70, 40, 50]; // [left, top, right, bottom]
         ],
         scrollX: true,        // enable horizontal scroll if needed
         autoWidth: false,      // important: lets columnDefs widths take effect
-        order: [[0, 'desc']] // sort by Created column descending
+        order: [[0, 'desc']], // sort by Created column descending
+        language: {
+            emptyTable: "No delivering found" // <-- put this here, no second initialization
+        }
     });
 });
 

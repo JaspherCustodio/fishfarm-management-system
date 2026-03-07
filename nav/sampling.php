@@ -120,7 +120,6 @@ if (!$data) {
                 </div>
 
                 <!-- table here -->
-                <?php if (!empty($samplings)) { ?>
 
                 <table class="main-table" id="dataTable">
                     <thead>
@@ -192,31 +191,6 @@ if (!$data) {
                     <?php } ?>
                 </tbody>
             </table>
-            <?php } else { ?>
-                <table class="main-table" id="dataTable">
-                    <thead>
-                        <tr>
-                        <th scope="col">Schedule</th>
-                        <th scope="col">Cage Name</th>
-                        <th scope="col">Date of Sampling</th>
-                        <th scope="col">Fish Type</th>
-                        <th scope="col">Weight</th>
-                        <th scope="col">Length</th>
-                        <th scope="col">Status</th>
-                        <?php if ($isAdmin): ?>
-                        <th scope="col" class="col-actions">Actions</th>
-                        <?php endif; ?>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="<?= $isAdmin ? 9 : 8 ?>" style="text-align:center;">
-                				No Sampling Record
-            				</td>
-                        </tr>
-                    </tbody>
-                </table>
-            <?php } ?>
             </div>
             
             <?php include "../inc/footer.php" ?>
@@ -832,7 +806,10 @@ doc.pageMargins = [35, 70, 40, 50]; // [left, top, right, bottom]
         ],
         scrollX: true,        // enable horizontal scroll if needed
         autoWidth: false,      // important: lets columnDefs widths take effect
-        order: [[0, 'desc']] // sort by Created column descending
+        order: [[0, 'desc']], // sort by Created column descending
+        language: {
+            emptyTable: "No sampling found" // <-- put this here, no second initialization
+        }
     });
 });
 
