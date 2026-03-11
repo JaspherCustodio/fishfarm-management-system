@@ -52,10 +52,14 @@ if (isset($_SESSION['id']) && isset($conn)) {
             <div class="header-welcome">
     <div class="welcome-text">Welcome,</div>
     <div class="user-row">
-        <span class="user-name">
-            <?= htmlspecialchars($_SESSION['name'] ?? '') ?>
-            <i class="fa fa-caret-down"></i>
-        </span>
+<span class="user-name">
+    <?php 
+        $fullName = $_SESSION['name'] ?? '';
+        $firstName = explode(' ', trim($fullName))[0] ?? '';
+        echo htmlspecialchars($firstName); 
+    ?>
+    <i class="fa fa-caret-down"></i>
+</span>
         <div class="notif-wrapper">
             <i class="fa fa-bell" id="notifBell"></i>
             <?php if ($notifCount > 0): ?>

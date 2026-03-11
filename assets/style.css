@@ -385,6 +385,7 @@ span {
 	white-space: nowrap;
 	overflow: visible;
 	text-overflow: ellipsis;
+    
 }
 .side-bar ul li.menu-main:hover,
 .side-bar ul li.menu-sub:hover {
@@ -435,6 +436,11 @@ span {
 .side-bar ul li:hover > a.active-link span,
 .side-bar ul li:hover > a.active-link i {
     color: #fff !important;
+}
+
+/* Remove blue highlight on mobile tap for links and buttons */
+a, button, .overlay-trigger, .side-bar ul li a, .notif-wrapper {
+    -webkit-tap-highlight-color: transparent;
 }
 
 .body {
@@ -1463,12 +1469,18 @@ footer{
         position: fixed;
         top: 0;
         left: -320px; /* hidden */
-        background: #1e293b;
         z-index: 999;
-        overflow-y: auto;
         width: 310px;
         min-height: 100vh;
         transition: 500ms width;
+
+        flex-shrink: 0;              /* prevents shrinking */
+        height: calc(100vh - 70px);  /* full viewport height minus header */
+        overflow-y: auto;            /* vertical scroll if content exceeds */
+        overflow-x: hidden;          /* prevent horizontal scroll */
+        background: #262931;         /* your sidebar bg */
+        display: flex;
+        flex-direction: column;
     }
 
     .side-bar.active {
@@ -1523,17 +1535,21 @@ footer{
         margin-top: 0px;
         margin-bottom: 0px;
     }
-    /* Make sidebar overlay */
+            /* Make sidebar overlay */
     .side-bar {
         position: fixed;
         top: 0;
         left: -320px; /* hidden */
-        background: #1e293b;
         z-index: 999;
-        overflow-y: auto;
         width: 310px;
-        min-height: 100vh;
         transition: 500ms width;
+
+        flex-shrink: 0;              /* prevents shrinking */
+        height: calc(100vh - 70px);  /* full viewport height minus header */
+        overflow-y: auto;            /* vertical scroll if content exceeds */
+        overflow-x: hidden;          /* prevent horizontal scroll */
+        display: flex;
+        flex-direction: column;
     }
 
     .side-bar.active {
