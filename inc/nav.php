@@ -9,10 +9,10 @@
         </li>
         <hr>
         <li class="menu-main">
-            <a href="../nav/expense.php?add=true"><i class="fa-solid fa-dollar-sign"></i><span>Manage Expense</span></a>
+            <a href="../nav/expense.php"><i class="fa-solid fa-dollar-sign"></i><span>Manage Expense</span></a>
         </li>
         <li class="menu-main">
-            <a href="../nav/fish_cage.php?add=true"><i class="fa-solid fa-fish"></i></i><span>Fish Cage</span></a>
+            <a href="../nav/fish_cage.php"><i class="fa-solid fa-fish"></i></i><span>Fish Cage</span></a>
         </li>
         <li class="menu-main">
             <a href="../nav/scheduler.php"><i class="fa-regular fa-calendar"></i></i><span>Scheduler</span></a>
@@ -27,21 +27,21 @@
         <!-- SUB -->
 
         <li class="menu-sub">
-            <a href="../nav/fish_cage_management.php?add=true">
+            <a href="../nav/fish_cage_management.php">
                 <i class="fa-solid fa-list"></i>
                 <span>Fish Cage Management</span>
             </a>
         </li>
 
         <li class="menu-sub">
-            <a href="../nav/sampling.php?add=true">
+            <a href="../nav/sampling.php">
                 <i class="fa-solid fa-fish"></i>
                 <span>Sampling</span>
             </a>
         </li>
 
         <li class="menu-sub">
-            <a href="../nav/feeding.php?add=true">
+            <a href="../nav/feeding.php">
                 <i class="fa-solid fa-bowl-food"></i>
                 <span>Feeding</span>
             </a>
@@ -51,9 +51,9 @@
             <a href="javascript:void(0)" class="overlay-trigger"><i class="fa-solid fa-boxes-stacked"></i><span>Stocking/Transferring</span><i class="fa-solid fa-chevron-right arrow"></i></a>
 
             <div class="overlay-menu">
-                <a href="../nav/stocking.php?add=true">Stocking</a>
-                <a href="../nav/transferring.php?add=true">Transferring</a>
-                <a href="../nav/delivering.php?add=true">Delivering</a>
+                <a href="../nav/stocking.php">Stocking</a>
+                <a href="../nav/transferring.php">Transferring</a>
+                <a href="../nav/delivering.php">Delivering</a>
             </div>
         </li>
 
@@ -65,9 +65,9 @@
             </a>
 
             <div class="overlay-menu">
-                <a href="../nav/net_cleaning.php?add=true">Net Cleaning</a>
-                <a href="../nav/net_repairing.php?add=true">Net Repairing</a>
-                <a href="../nav/net_checking.php?add=true">Net Checking</a>
+                <a href="../nav/net_cleaning.php">Net Cleaning</a>
+                <a href="../nav/net_repairing.php">Net Repairing</a>
+                <a href="../nav/net_checking.php">Net Checking</a>
             </div>
         </li>
 
@@ -94,21 +94,21 @@
         <!-- SUB -->
 
         <li class="menu-sub">
-            <a href="../nav/fish_cage_management.php?add=true">
+            <a href="../nav/fish_cage_management.php">
                 <i class="fa-solid fa-list"></i>
                 <span>Fish Cage Management</span>
             </a>
         </li>
 
         <li class="menu-sub">
-            <a href="../nav/sampling.php?add=true">
+            <a href="../nav/sampling.php">
                 <i class="fa-solid fa-fish"></i>
                 <span>Sampling</span>
             </a>
         </li>
 
         <li class="menu-sub">
-            <a href="../nav/feeding.php?add=true">
+            <a href="../nav/feeding.php">
                 <i class="fa-solid fa-bowl-food"></i>
                 <span>Feeding</span>
             </a>
@@ -118,9 +118,9 @@
             <a href="javascript:void(0)" class="overlay-trigger"><i class="fa-solid fa-boxes-stacked"></i><span>Stocking/Transferring</span><i class="fa-solid fa-chevron-right arrow"></i></a>
 
             <div class="overlay-menu">
-                <a href="../nav/stocking.php?add=true">Stocking</a>
-                <a href="../nav/transferring.php?add=true">Transferring</a>
-                <a href="../nav/delivering.php?add=true">Delivering</a>
+                <a href="../nav/stocking.php">Stocking</a>
+                <a href="../nav/transferring.php">Transferring</a>
+                <a href="../nav/delivering.php">Delivering</a>
             </div>
         </li>
 
@@ -132,9 +132,9 @@
             </a>
 
             <div class="overlay-menu">
-                <a href="../nav/net_cleaning.php?add=true">Net Cleaning</a>
-                <a href="../nav/net_repairing.php?add=true">Net Repairing</a>
-                <a href="../nav/net_checking.php?add=true">Net Checking</a>
+                <a href="../nav/net_cleaning.php">Net Cleaning</a>
+                <a href="../nav/net_repairing.php">Net Repairing</a>
+                <a href="../nav/net_checking.php">Net Checking</a>
             </div>
         </li>
     </ul>

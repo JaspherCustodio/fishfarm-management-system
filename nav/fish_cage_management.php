@@ -88,7 +88,7 @@ if (!$data) {
             <div class="table-tools">
                 <div class="left-buttons">
                     <button id="btnPrintDetail" class="btn btn-primary">Print</button>
-                    <button id="btnExcel" class="btn btn-primary">Excel</button>
+                    <!-- <button id="btnExcel" class="btn btn-primary">Excel</button> -->
                     <button id="btnPdf" class="btn btn-primary">PDF</button>
                 </div>
                 <div class="right-search">
