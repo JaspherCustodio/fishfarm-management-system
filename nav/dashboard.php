@@ -399,16 +399,17 @@ foreach ($categoryExpenses as $row) {
 }
 
 
-// Current month & year
-$currentMonth = date('m');
-$currentYear  = date('Y');
+$selectedMonth = $_GET['month'] ?? date('Y-m');
+
+$year  = date('Y', strtotime($selectedMonth));
+$month = date('m', strtotime($selectedMonth));
 
 $salesQuery = "
     SELECT SUM(sale_amount) AS total_sales
     FROM deliveries
     WHERE status = 'Completed'
-      AND MONTH(delivery_date) = '$currentMonth'
-      AND YEAR(delivery_date) = '$currentYear'
+      AND MONTH(delivery_date) = '$month'
+      AND YEAR(delivery_date) = '$year'
 ";
 
 $salesResult = $conn->query($salesQuery);
@@ -417,8 +418,8 @@ $totalSales  = $salesResult->fetch_assoc()['total_sales'] ?? 0;
 $expenseQuery = "
     SELECT SUM(amount) AS total_expenses
     FROM expenses
-    WHERE MONTH(expense_date) = '$currentMonth'
-      AND YEAR(expense_date) = '$currentYear'
+    WHERE MONTH(expense_date) = '$month'
+      AND YEAR(expense_date) = '$year'
 ";
 
 $expenseResult = $conn->query($expenseQuery);
@@ -434,8 +435,11 @@ if ($totalExpenses > 0) {
 // 🐟 Total Fish Inventory (Remaining from Completed Stocking)
 $totalInventory = $conn->query("
     SELECT SUM(current_quantity) AS total_inventory
-    FROM stocking
-    WHERE status = 'Completed'
+    FROM stocking st
+    JOIN schedules s ON s.id = st.schedule_id
+    WHERE st.status = 'Completed'
+      AND MONTH(s.schedule_datetime) = '$month'
+      AND YEAR(s.schedule_datetime) = '$year'
 ")->fetch_assoc()['total_inventory'] ?? 0;
 ?>
 
@@ -544,9 +548,20 @@ $totalInventory = $conn->query("
 				</div>
 			</a>
 		</div>
-		
+
 
 <?php if ($isAdmin): ?>
+<?php
+$selectedMonth = $_GET['month'] ?? date('Y-m'); // format: 2026-04
+?>
+
+<div style="margin-top:10px;">
+    <form method="GET">
+        <label>Select Month:</label>
+        <input type="month" name="month" value="<?= $selectedMonth ?>" onchange="this.form.submit()">
+    </form>
+</div>
+
 <div class="dashboard-cards main">
 	<div class="dash-card inventory">
 		<i class="fa-solid fa-fish"></i>
@@ -555,7 +570,7 @@ $totalInventory = $conn->query("
 			<h3><?= number_format($totalInventory) ?></h3>
 		</div>
 
-		<p>Total Fish Inventory</p>
+		<p><?= date('F Y', strtotime($selectedMonth)) ?> Inventory</p>
 	</div>
 
     <div class="dash-card sales">
@@ -563,7 +578,7 @@ $totalInventory = $conn->query("
         <div class="card-text">
             <h3>₱<?= number_format($totalSales, 2) ?></h3>
         </div>
-		<p>This Month Sales</p>
+		<p><?= date('F Y', strtotime($selectedMonth)) ?> Sales</p>
     </div>
 
     <div class="dash-card expense">
@@ -571,7 +586,7 @@ $totalInventory = $conn->query("
         <div class="card-text">
             <h3>₱<?= number_format($totalExpenses, 2) ?></h3>
         </div>
-		<p>This Month Expenses</p>
+		<p><?= date('F Y', strtotime($selectedMonth)) ?> Expenses</p>
     </div>
 
     <div class="dash-card <?= $netProfit < 0 ? 'negative' : 'profit' ?>">
@@ -579,7 +594,7 @@ $totalInventory = $conn->query("
         <div class="card-text">
             <h3>₱<?= number_format($netProfit, 2) ?></h3>
         </div>
-		<p>This Month Net Profit</p>
+		<p><?= date('F Y', strtotime($selectedMonth)) ?> Net Profit</p>
     </div>
 
     <div class="dash-card roi">
@@ -587,7 +602,7 @@ $totalInventory = $conn->query("
         <div class="card-text">
             <h3><?= number_format($roi, 2) ?>%</h3>
         </div>
-		<p>This Month ROI</p>
+		<p><?= date('F Y', strtotime($selectedMonth)) ?> ROI</p>
     </div>
 
 </div>

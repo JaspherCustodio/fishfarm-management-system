@@ -85,6 +85,7 @@ if (!$data) {
                 <?php endif; ?>
             </div>
 
+        
             <div class="table-tools">
                 <div class="left-buttons">
                     <button id="btnPrintDetail" class="btn btn-primary">Print</button>
